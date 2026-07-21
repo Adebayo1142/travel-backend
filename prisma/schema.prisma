@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  LOAN_OFFICER
+  CUSTOMER_SERVICE
+  OPERATIONS
+  COLLECTION
+}
+
+model TravelApplication {
+
+  id                  Int      @id @default(autoincrement())
+
+  referenceNumber     String   @unique
+
+  firstName           String
+  title               String
+  lastName            String
+  email               String
+  phone               String
+  motherMaidenName    String
+  maritalStatus       String
+
+  countryOfBirth      String
+  stateOfBirth        String
+  localGovernment     String
+
+  residentialAddress  String
+  nearestBusStop      String
+  city                String
+  stateOfResidence    String
+
+  isTraveler          Boolean
+
+  employmentStatus    String
+  occupation          String
+  employerName        String
+  officePhone         String
+  employerAddress     String
+
+  loanAmount          Decimal @db.Decimal(12,2)
+
+  destinationCountry  String
+  travelDuration      String
+  travelPurpose       String
+
+  identificationType  String
+  referralSource      String
+
+  bankName            String
+  accountNumber       String
+  bvn                 String
+
+  nextOfKinPhone      String
+
+  status              String   @default("Pending")
+customerId      Int?
+
+customer        Customer? @relation(fields: [customerId], references: [id])
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("travel_applications")
+}
+model Customer {
+
+  id              Int      @id @default(autoincrement())
+
+  firstName       String
+  lastName        String
+
+  email           String   @unique
+  phone           String
+
+  password        String
+
+  emailVerified   Boolean  @default(false)
+
+  isActive        Boolean  @default(true)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  applications    TravelApplication[]
+
+}
+model User {
+
+  id            Int      @id @default(autoincrement())
+
+  firstName     String
+  lastName      String
+
+  email         String   @unique
+
+  password      String
+
+  role          Role
+
+  isActive      Boolean  @default(true)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+}
